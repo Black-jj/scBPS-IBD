@@ -1,0 +1,31 @@
+source(file.path("R", "utils.R"))
+stopifnot(all(tolower(tools::file_ext(list.files(result_dir))) == "pdf"))
+options(stringsAsFactors = FALSE)
+suppressPackageStartupMessages({
+    library(data.table)
+    library(igraph)
+    library(dplyr)
+})
+set.seed(20260802)
+root <- client_root
+work_dir <- file.path(root, "work/21_dgidb_drug_prediction")
+result_dir <- file.path(root, "results/21_DGIdb_Drug_Prediction")
+dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(result_dir, recursive = TRUE, showWarnings = FALSE)
+unlink(list.files(result_dir, full.names = TRUE), recursive = TRUE)
+KeyGene <- fread(file.path(root, "work/09_gutmgene_key_gene_network/key_genes.tsv"))$KeyGene
+drug <- fread(file.path(client_root, "data", "reference", "interactions.tsv"))
+key.drug <- drug[gene_name %in% KeyGene]
+network.table <- unique(data.frame(Gene = key.drug$gene_name, Drug = key.drug$drug_name))
+network.table <- network.table[!is.na(network.table$Drug) & network.table$Drug != "NULL" & network.table$Drug != "", ]
+stopifnot(nrow(network.table) > 0)
+write.table(network.table, file.path(work_dir, "DGIdb_key_gene_drug_edges.tsv"), row.names = FALSE, sep = "\t", quote = FALSE)
+pdf(file.path(result_dir, "1.Drug-Gene-Network.pdf"), width = 7, height = 7)
+g <- graph_from_data_frame(d = network.table, directed = FALSE)
+V(g)$type <- ifelse(V(g)$name %in% network.table$Drug, "Drug", "Gene")
+V(g)$color <- ifelse(V(g)$type == "Drug", "#4DBBD5", "#E64B35")
+V(g)$size <- ifelse(V(g)$type == "Drug", 5, 10)
+lay <- layout_with_fr(g)
+plot(g, layout = lay, vertex.label.cex = 0.8, vertex.label.color = "black", edge.color = "grey70", main = "Drug Prediction")
+dev.off()
+writeLines(capture.output(sessionInfo()), file.path(root, "logs/21_dgidb_drug_prediction_sessionInfo.txt"))
