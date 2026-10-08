@@ -39,21 +39,7 @@ Raw data are not included in this repository. Download the following GEO series 
 | `data/GSE235236/GSE235236_sample_manifest.tsv` | GSE235236 sample annotations | Tab-separated table with columns `gsm` and `group3` (HC, UC or CD) |
 | `data/GSE234713/` | [GSE234713](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE234713) | CosMx normalized matrix, annotation file and per-sample metadata files |
 
-Reference resources are expected under `data/`:
-
-| Path | Source |
-|---|---|
-| `data/reference/scBPS/gene_zscore_Dutch207.txt` | scBPS gene z-scores for the 207 Dutch Microbiome Project traits (Li et al., *Nat Microbiol* 2025) |
-| `data/gutMGene_v2_20260802/microbe_gene.tsv` | Human gut microbe-host gene relations from [gutMGene v2.0](http://bio-computing.hrbmu.edu.cn/gutmgene) |
-| `data/miRWalk_20260802/` | Human miRNA-target exports from [miRWalk](http://mirwalk.umm.uni-heidelberg.de/) for CCL20, CLDN4 and CXCL8 |
-| `data/reference/interactions.tsv` | Interaction file from [DGIdb](https://www.dgidb.org/) |
-| `data/reference/RcisTarget/` | hg19 CIS-BP 500 bp upstream motif ranking and motif annotation files for [RcisTarget](https://resources.aertslab.org/cistarget/) |
-| `data/reference/h.all.v7.5.1.symbols.gmt` | MSigDB Hallmark gene sets, v7.5.1 |
-| `data/reference/kegg.all.entrez.hsa.rds` | Human KEGG pathway table with columns `PathwayID`, `EntrezID` and `PathwayName` |
-| `data/reference/ssGSEA/immune.gmt` | 29 immune signature gene sets used for ssGSEA |
-| `data/reference/hallmark.gs.RData`, `data/reference/immune.gmt`, `data/reference/GenesetInfo.txt` | Gene sets used for AUCell and GSVA scoring |
-| `data/reference/Immunomodulator_and_chemokines.txt` | Chemokine, receptor, MHC and immunomodulator gene list |
-| `data/models/Geneformer-V2-104M/`, `data/reference/geneformer/` | Geneformer V2-104M model and gene dictionaries from [Hugging Face](https://huggingface.co/ctheodoris/Geneformer) |
+Reference resources used by the scripts (placed under `data/`): scBPS gene z-scores for the 207 Dutch Microbiome Project traits, gutMGene v2.0 human microbe-host gene relations, miRWalk exports, DGIdb interactions, RcisTarget hg19 CIS-BP motif files, MSigDB Hallmark v7.5.1 gene sets, a human KEGG pathway table, immune signature gene sets for ssGSEA, and the Geneformer V2-104M model with its gene dictionaries ([Hugging Face](https://huggingface.co/ctheodoris/Geneformer)).
 
 ## Running the analysis
 
@@ -65,32 +51,32 @@ for f in scripts/*.R; do Rscript "$f"; done
 
 Intermediate objects are written to `work/`, figures to `results/` and session information to `logs/`.
 
-| Script | Analysis | Figure |
-|---|---|---|
-| `00_preflight.R` | Input checks and sample manifests | |
-| `01_scRNA_qc_integration.R` | Quality control, normalization and Harmony integration | Supplementary Fig. 1 |
-| `02_scRNA_annotation.R` | Cell annotation and composition | Fig. 1A–D |
-| `03_marker_modules.R` | Marker modules and functional terms | Fig. 1E |
-| `04_scBPS_key_cell.R` | scBPS cell-type prioritization | Fig. 2 |
-| `05_key_cell_DE_GSEA.R` | Enterocyte pseudobulk differential expression and GSEA | Fig. 3A–D |
-| `06_BPS_pathway_association.R` | BPS gradient and pathway activity | Fig. 3E |
-| `07_trajectory.R` | CytoTRACE and Monocle2 trajectory | Supplementary Fig. 2 |
-| `08_cellchat.R` | Cell-cell communication | Fig. 4A–E |
-| `09_gutMGene_network.R` | Microbe-gene network and key genes | Fig. 4F |
-| `10_key_gene_enrichment.R` | Bulk GSEA and GSVA by key-gene expression | Supplementary Fig. 3 |
-| `11_immune_microenvironment.R` | ssGSEA immune signatures | Supplementary Fig. 4A–D |
-| `12_immune_regulators.R` | Key gene and immunomodulator correlations | Supplementary Fig. 4E–I |
-| `13_RcisTarget.R` | Transcription factor network | Fig. 5E |
-| `14_miRNA_network.R` | miRNA network | Fig. 5F |
-| `15_key_gene_scRNA_expression.R` | Key-gene expression in the single-cell atlas | Fig. 5A–C |
-| `16_key_gene_pathway_activity.R` | AUCell pathway activity | Fig. 5D |
-| `17_CosMx_spatial_mapping.R` | CosMx tissue compartments and epithelial subtypes | Fig. 6A–B |
-| `18_mistyR.R` | mistyR spatial modelling | Fig. 6C–D |
-| `19_key_gene_spatial_expression.R` | Spatial expression of the key genes | Fig. 6E–G |
-| `20_geneformer.R` | Geneformer in silico deletion | Fig. 7A, D, G |
-| `21_geneformer_enrichment.R` | Enrichment of perturbed genes | Fig. 7B, C, E, F, H, I |
-| `22_DGIdb.R` | Drug-gene interaction network | Fig. 7J |
-| `23_final_figures.R` | Final figure layouts | |
+| Script | Analysis |
+|---|---|
+| `00_preflight.R` | Input checks and sample manifests |
+| `01_scRNA_qc_integration.R` | Quality control, normalization and Harmony integration |
+| `02_scRNA_annotation.R` | Cell annotation and composition |
+| `03_marker_modules.R` | Marker modules and functional terms |
+| `04_scBPS_key_cell.R` | scBPS cell-type prioritization |
+| `05_key_cell_DE_GSEA.R` | Enterocyte pseudobulk differential expression and GSEA |
+| `06_BPS_pathway_association.R` | BPS gradient and pathway activity |
+| `07_trajectory.R` | CytoTRACE and Monocle2 trajectory |
+| `08_cellchat.R` | Cell-cell communication |
+| `09_gutMGene_network.R` | Microbe-gene network and key genes |
+| `10_key_gene_enrichment.R` | Bulk GSEA and GSVA by key-gene expression |
+| `11_immune_microenvironment.R` | ssGSEA immune signatures |
+| `12_immune_regulators.R` | Key gene and immunomodulator correlations |
+| `13_RcisTarget.R` | Transcription factor network |
+| `14_miRNA_network.R` | miRNA network |
+| `15_key_gene_scRNA_expression.R` | Key-gene expression in the single-cell atlas |
+| `16_key_gene_pathway_activity.R` | AUCell pathway activity |
+| `17_CosMx_spatial_mapping.R` | CosMx tissue compartments and epithelial subtypes |
+| `18_mistyR.R` | mistyR spatial modelling |
+| `19_key_gene_spatial_expression.R` | Spatial expression of the key genes |
+| `20_geneformer.R` | Geneformer in silico deletion |
+| `21_geneformer_enrichment.R` | Enrichment of perturbed genes |
+| `22_DGIdb.R` | Drug-gene interaction network |
+| `23_final_figures.R` | Final figure layouts |
 
 ## License
 
